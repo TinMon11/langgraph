@@ -5,15 +5,18 @@
 # We can select the tool from the list and call it
 # In this code we are doing it manually to understand how it works
 
+from typing import List, Union
+
 from dotenv import load_dotenv
-from langchain.tools import tool
+from langchain.agents.format_scratchpad.log import format_log_to_str
+from langchain.agents.output_parsers import ReActSingleInputOutputParser
 from langchain.prompts import PromptTemplate
+from langchain.tools import tool
+from langchain_core.agents import AgentAction, AgentFinish
 from langchain_core.tools import render_text_description
 from langchain_openai import ChatOpenAI
-from langchain.agents.output_parsers import ReActSingleInputOutputParser
-from langchain_core.agents import AgentAction, AgentFinish
-from typing import Union, List
-from langchain.agents.format_scratchpad.log import format_log_to_str
+
+from callbacks import AgentCallbackHandler
 
 load_dotenv()
 
@@ -23,7 +26,6 @@ def get_string_length(text: str) -> int:
     """
     This tool returns the length of a string
     """
-    print(" ** Calling get_string_length with text: ", text)
     text = text.strip("'\n'").strip('"')
     return len(text)
 
@@ -71,6 +73,7 @@ def main():
         model="gpt-4.1-nano",
         temperature=0,
         stop=["\nObservation:", "Observation:"],
+        callbacks=[AgentCallbackHandler()],
     )
 
     intermediate_steps = []
@@ -85,35 +88,31 @@ def main():
         | ReActSingleInputOutputParser()
     )
 
-    agent_step: Union[AgentAction, AgentFinish] = chain.invoke(
-        {
-            "input": "What is the length of the string 'independiente'",
-            "agent_scratchpad": intermediate_steps,
-        }
-    )
+    agent_step = ""
 
+    while not isinstance(agent_step, AgentFinish):
+        # We can make the loop automatically, until the response we get is 'AgentFinish'
+        # So the llm will be called, determines it needs to call a tool ('AgentAction' type)
+        # Call it, gets the result --> Next iteration it has all the history, it knows it has the answer
+        # It will respond with a type of 'AgentFinish'
+        agent_step: Union[AgentAction, AgentFinish] = chain.invoke(
+            {
+                "input": "What is the length of the string 'independiente'",
+                "agent_scratchpad": intermediate_steps,
+            }
+        )
 
-    if isinstance(agent_step, AgentAction):
-        tool_name = agent_step.tool
-        tool_to_use = find_tool_by_name(tools, tool_name)
-        tool_input = agent_step.tool_input
-        observation = tool_to_use.func(str(tool_input))
+        if isinstance(agent_step, AgentAction):
+            tool_name = agent_step.tool
+            tool_to_use = find_tool_by_name(tools, tool_name)
+            tool_input = agent_step.tool_input
+            observation = tool_to_use.func(str(tool_input))
 
-        print(" ** Observation: ", observation)
-        intermediate_steps.append((agent_step, observation))
-        print(" ** Intermediate steps: ", intermediate_steps)
+            intermediate_steps.append((agent_step, observation))
 
-    agent_step: Union[AgentAction, AgentFinish] = chain.invoke(
-        {
-            "input": "What is the length of the string 'independiente'",
-            "agent_scratchpad": intermediate_steps,
-        }
-    )
-
-    print(" ** Agent step: ", agent_step)
-    
     if isinstance(agent_step, AgentFinish):
         print(" ** Agent finish: ", agent_step.return_values)
+
 
 if __name__ == "__main__":
     main()
