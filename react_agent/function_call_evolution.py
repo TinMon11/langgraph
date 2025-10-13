@@ -1,5 +1,3 @@
-import os
-import sys
 from typing import List
 
 from dotenv import load_dotenv
@@ -7,9 +5,7 @@ from langchain.tools import tool
 from langchain_core.messages import HumanMessage, ToolMessage
 from langchain_openai import ChatOpenAI
 
-# Add parent directory to path to import react_agent
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from react_agent.callbacks import AgentCallbackHandler
+from callbacks import AgentCallbackHandler
 
 load_dotenv()
 
