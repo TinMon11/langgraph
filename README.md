@@ -88,6 +88,32 @@ Instead of using the traditional ReAct prompt pattern, this file demonstrates th
 
 This evolution represents a shift from developer-managed tool calling to LLM-managed tool calling, where the responsibility for determining when and how to call tools is delegated to the language model itself.
 
+### `intro-vector-dbs/` - Vector Database Introduction
+
+A comprehensive introduction to vector databases and RAG (Retrieval Augmented Generation) using LangChain. This folder demonstrates how to work with vector stores for document retrieval and question-answering:
+
+**Core Components:**
+- **`ingestion.py`**: Document ingestion pipeline using Pinecone vector database
+- **`retrieval.py`**: RAG implementation with both built-in chains and custom LCEL chains
+- **`chat_with_pdf.py`**: Complete PDF-to-vector workflow using FAISS for local storage
+
+**Vector Database Workflow:**
+1. **Document Loading**: Load PDFs or text files using LangChain loaders
+2. **Text Splitting**: Split documents into manageable chunks (1000 tokens with 200 overlap)
+3. **Embedding Generation**: Convert text chunks to vector embeddings using OpenAI
+4. **Vector Storage**: Store embeddings in vector database (Pinecone or FAISS)
+5. **Retrieval**: Query vector store for semantically similar documents
+6. **RAG Generation**: Combine retrieved context with LLM for contextual answers
+
+**Key Features:**
+- **Multiple Vector Stores**: Examples with both Pinecone (cloud) and FAISS (local)
+- **Document Types**: Support for PDFs and text files
+- **RAG Patterns**: Both LangChain's built-in chains and custom LCEL implementations
+- **Local Storage**: FAISS index persistence for offline usage
+- **Chunking Strategies**: Configurable text splitting with overlap for context preservation
+
+This implementation provides a solid foundation for understanding how vector databases enable semantic search and retrieval-augmented generation in AI applications.
+
 ---
 
 *This repository serves as a comprehensive collection of LangGraph implementations, showcasing various patterns, techniques, and real-world applications.*
