@@ -7,6 +7,7 @@
 
 from typing import List, Union
 
+from callbacks import AgentCallbackHandler
 from dotenv import load_dotenv
 from langchain.agents.format_scratchpad.log import format_log_to_str
 from langchain.agents.output_parsers import ReActSingleInputOutputParser
@@ -15,8 +16,6 @@ from langchain.tools import tool
 from langchain_core.agents import AgentAction, AgentFinish
 from langchain_core.tools import render_text_description
 from langchain_openai import ChatOpenAI
-
-from callbacks import AgentCallbackHandler
 
 load_dotenv()
 

@@ -5,7 +5,6 @@ from langchain import hub
 from langchain.chains.combine_documents import create_stuff_documents_chain
 from langchain.chains.retrieval import create_retrieval_chain
 from langchain_community.document_loaders import PyPDFLoader
-
 # Helps to convert pdf files to perform querys faster
 from langchain_community.vectorstores import FAISS
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
@@ -48,5 +47,7 @@ if __name__ == "__main__":
         vector_store.as_retriever(), combine_docs_chain
     )
 
-    result = retrieval_chain.invoke({"input": "Give me the gist of React in 3 sentences"})
+    result = retrieval_chain.invoke(
+        {"input": "Give me the gist of React in 3 sentences"}
+    )
     print(result["answer"])

@@ -1,2 +1,10 @@
 langchain_openai==0.3.35
 python-dotenv==1.1.1
+requests
+langchain_core
+langgraph
+langchain
+langchain_openai
+langchain_tavily
+langchain_community
+python-dotenv
