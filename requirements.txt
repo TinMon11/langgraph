@@ -8,3 +8,5 @@ langchain_openai
 langchain_tavily
 langchain_community
 python-dotenv
+pytest
+chromadb
